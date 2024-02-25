@@ -76,6 +76,15 @@ const Quiz: React.FC = () => {
       {questions.questions.map((question, questionIndex) => (
         <div key={questionIndex} className="mt-5 mb-5">
           <h2>
+            {questions.ended ? (
+              question.correct() ? (
+                ""
+              ) : (
+                <span className="ng">NG</span>
+              )
+            ) : (
+              ""
+            )}
             {questionIndex + 1}: {question.text}
           </h2>
           <ol className="list-group">
@@ -89,6 +98,15 @@ const Quiz: React.FC = () => {
                       onChange={(e) => handleCheckboxChange(item)}
                       className="form-check-input me-1"
                     />
+                    {questions.ended ? (
+                      item.correct ? (
+                        <span className="answer">[Answer]</span>
+                      ) : (
+                        ""
+                      )
+                    ) : (
+                      ""
+                    )}
                     {item.text}
                   </label>
                 </li>
@@ -99,12 +117,14 @@ const Quiz: React.FC = () => {
       ))}
       <div className="footerControl container-fluid">
         <Stack direction="horizontal" gap={2}>
-          <Button onClick={(e) => handleEnd()} className="col-2">End</Button>
-        <span className="border p-2 score">
-          {questions.ended
-            ? `${questions.numberOfCorrectAnswers} / ${questions.numberOfQuestions()} (${questions.numberOfCorrectAnswers / questions.numberOfQuestions() * 100} %)`
-            : "-"}
-        </span>
+          <Button onClick={(e) => handleEnd()} className="col-2">
+            End
+          </Button>
+          <span className="border p-2 score">
+            {questions.ended
+              ? `${questions.numberOfCorrectAnswers} / ${questions.numberOfQuestions()} (${(questions.numberOfCorrectAnswers / questions.numberOfQuestions()) * 100} %)`
+              : "-"}
+          </span>
         </Stack>
       </div>
     </div>
