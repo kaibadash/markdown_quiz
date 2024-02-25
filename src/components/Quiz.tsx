@@ -8,10 +8,11 @@ import remarkRehype from "remark-rehype";
 import { Questions } from "../data/Questions";
 import { Question } from "../data/Question";
 import { Item } from "../Item";
+import { Button, Stack } from "react-bootstrap";
+
 async function parseMarkdown(markdown: string): Promise<Questions> {
   const processor = unified().use(remarkParse).use(remarkRehype);
   const contents = await processor.parse(markdown);
-  console.log(contents);
 
   let questions = new Questions();
   let currentQuestion: Question | null = null;
@@ -71,21 +72,22 @@ const Quiz: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="container">
       {questions.questions.map((question, questionIndex) => (
-        <div key={questionIndex}>
+        <div key={questionIndex} className="mt-5 mb-5">
           <h2>
             {questionIndex + 1}: {question.text}
           </h2>
-          <ol>
+          <ol className="list-group">
             {question.items.map((item, itemIndex) => {
               return (
-                <li key={item.id}>
-                  <label>
+                <li key={item.id} className="list-group-item">
+                  <label className="form-check-label">
                     <input
                       type="checkbox"
                       checked={item.selected}
                       onChange={(e) => handleCheckboxChange(item)}
+                      className="form-check-input me-1"
                     />
                     {item.text}
                   </label>
@@ -95,13 +97,15 @@ const Quiz: React.FC = () => {
           </ol>
         </div>
       ))}
-      <div className="footerControl">
-        <button onClick={(e) => handleEnd()}>End</button>
-        <span className="score">
+      <div className="footerControl container-fluid">
+        <Stack direction="horizontal" gap={2}>
+          <Button onClick={(e) => handleEnd()} className="col-2">End</Button>
+        <span className="border p-2 score">
           {questions.ended
-            ? `${questions.numberOfCorrectAnswers} / ${questions.numberOfQuestions()}`
-            : ""}
+            ? `${questions.numberOfCorrectAnswers} / ${questions.numberOfQuestions()} (${questions.numberOfCorrectAnswers / questions.numberOfQuestions() * 100} %)`
+            : "-"}
         </span>
+        </Stack>
       </div>
     </div>
   );
