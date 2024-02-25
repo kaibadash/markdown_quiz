@@ -69,6 +69,7 @@ const Quiz: React.FC = () => {
 
   const handleEnd = () => {
     questions.end();
+    setQuestions(_.cloneDeep(questions));
   };
 
   return (
