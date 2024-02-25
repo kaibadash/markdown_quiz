@@ -104,6 +104,11 @@ const Quiz: React.FC = () => {
           </ol>
         </div>
       ))}
+
+      <div>
+        <button onClick={() => questions.end()}>End</button>
+        {questions.numberOfCorrectAnswers}
+      </div>
     </div>
   );
 };
