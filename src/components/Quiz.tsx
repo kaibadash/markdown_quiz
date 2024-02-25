@@ -92,16 +92,13 @@ const Quiz: React.FC = () => {
               return (
                 <li key={item.id} className="list-group-item">
                   <label className="form-check-label">
-                    {questions.ended ? (
-                      ""
-                    ) : (
-                      <input
-                        type="checkbox"
-                        checked={item.selected}
-                        onChange={(e) => handleCheckboxChange(item)}
-                        className="form-check-input me-1"
-                      />
-                    )}
+                    <input
+                      type="checkbox"
+                      checked={item.selected}
+                      onChange={(e) => handleCheckboxChange(item)}
+                      disabled={questions.ended}
+                      className="form-check-input me-1"
+                    />
                     {questions.ended ? (
                       item.correct ? (
                         <span className="answer">[Answer]</span>
