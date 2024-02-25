@@ -9,6 +9,7 @@ import { Questions } from "../data/Questions";
 import { Question } from "../data/Question";
 import { Item } from "../Item";
 import { Button, Stack } from "react-bootstrap";
+import { useParams } from "react-router-dom";
 
 async function parseMarkdown(markdown: string): Promise<Questions> {
   const processor = unified().use(remarkParse).use(remarkRehype);
@@ -52,15 +53,17 @@ async function parseMarkdown(markdown: string): Promise<Questions> {
 }
 
 const Quiz: React.FC = () => {
+  const { fileName } = useParams();
   const [questions, setQuestions] = useState<Questions>(new Questions());
 
   useEffect(() => {
+    console.log(fileName);
     (async () => {
-      const response = await fetch("/quiz/rails.md");
+      const response = await fetch(`/quiz/${fileName}`);
       const md = await response.text();
       setQuestions(await parseMarkdown(md));
     })();
-  }, []); // 空の依存配列を渡すことで、コンポーネントのマウント時にのみ実行されるようにする
+  }, [fileName]);
 
   const handleCheckboxChange = (item: Item) => {
     item.selected = !item.selected;
