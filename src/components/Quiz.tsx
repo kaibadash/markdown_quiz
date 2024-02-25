@@ -1,36 +1,14 @@
-import './App.css';
+import './Quiz.css';
 
 import React, { useState, useEffect } from 'react';
 import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
-import { Questions } from './Questions';
-import { Question } from './Question';
+import { Questions } from '../data/Questions';
+import { Question } from '../data/Question';
 import { Item } from '../Item';
 
-// 仮のMarkdown形式のクイズデータ
-const markdown: string = `
----
-
-Rails で MVC が表すものは何ですか？
-
-- [x] Model, View, Controller
-- [ ] Model, Version, Controller
-- [ ] Module, View, Component
-- [ ] Manager, View, Controller
-
----
-
-Rails のマイグレーションとは何ですか？
-
-- [ ] データベースへの接続テスト
-- [x] データベーススキーマのバージョン管理
-- [ ] アプリケーションのデプロイメントプロセス
-- [ ] ウェブページの移行
-
----`;
-
-async function fetchData(url: string): Promise<Questions> {
+async function parseMarkdown(markdown: string): Promise<Questions> {
   const processor = unified()
     .use(remarkParse)
     .use(remarkRehype);
@@ -62,18 +40,17 @@ async function fetchData(url: string): Promise<Questions> {
   return questions;
 }
 
-
 const Quiz: React.FC = () => {
   const [questions, setQuestions] = useState<Questions>(new Questions());
+  const [markdownContent, setMarkdownContent] = useState<string>('');
 
   useEffect(() => {
-    fetchData('https://api.example.com/data')
-      .then((q) => {
-        setQuestions(q);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    (async() => {
+      const response = await fetch('/quiz/rails.md');
+      const md = await response.text();
+      setMarkdownContent(md);
+      setQuestions(await parseMarkdown(md));
+    })()
   }, []); // 空の依存配列を渡すことで、コンポーネントのマウント時にのみ実行されるようにする
 
   const handleCheckboxChange = (item: Item) => {
