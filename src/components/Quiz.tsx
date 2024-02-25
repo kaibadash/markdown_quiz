@@ -1,12 +1,12 @@
-import './Quiz.css';
+import "./Quiz.css";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
-import { Questions } from '../data/Questions';
-import { Question } from '../data/Question';
-import { Item } from '../Item';
+import { Questions } from "../data/Questions";
+import { Question } from "../data/Question";
+import { Item } from "../Item";
 
 async function parseMarkdown(markdown: string): Promise<Questions> {
   const processor = unified().use(remarkParse).use(remarkRehype);
@@ -27,7 +27,9 @@ async function parseMarkdown(markdown: string): Promise<Questions> {
       for (const item of child.children) {
         const itemText = (item.children[0] as any).children[0].value;
         const correct = itemText.startsWith("[x]");
-        const text = itemText.replace(/^\[ ?x?\]\s?/, "").replace(/^\[\]\s*/, "");
+        const text = itemText
+          .replace(/^\[ ?x?\]\s?/, "")
+          .replace(/^\[\]\s*/, "");
         currentQuestion.add(new Item(text, correct));
       }
     }
@@ -40,15 +42,15 @@ async function parseMarkdown(markdown: string): Promise<Questions> {
 
 const Quiz: React.FC = () => {
   const [questions, setQuestions] = useState<Questions>(new Questions());
-  const [markdownContent, setMarkdownContent] = useState<string>('');
+  const [markdownContent, setMarkdownContent] = useState<string>("");
 
   useEffect(() => {
-    (async() => {
-      const response = await fetch('/quiz/rails.md');
+    (async () => {
+      const response = await fetch("/quiz/rails.md");
       const md = await response.text();
       setMarkdownContent(md);
       setQuestions(await parseMarkdown(md));
-    })()
+    })();
   }, []); // 空の依存配列を渡すことで、コンポーネントのマウント時にのみ実行されるようにする
 
   const handleCheckboxChange = (item: Item) => {
@@ -58,7 +60,7 @@ const Quiz: React.FC = () => {
 
   const handleEnd = () => {
     questions.end();
-  }
+  };
 
   return (
     <div>

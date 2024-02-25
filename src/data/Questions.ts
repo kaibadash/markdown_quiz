@@ -15,7 +15,7 @@ export class Questions {
     this.ended = true;
     this.numberOfCorrectAnswers = this.questions.reduce(
       (sum, question) => sum + (question.correct() ? 1 : 0),
-      0
+      0,
     );
   }
 
