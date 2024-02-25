@@ -6,7 +6,7 @@ import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import { Questions } from './Questions';
 import { Question } from './Question';
-import { Item } from './Item';
+import { Item } from '../Item';
 
 // 仮のMarkdown形式のクイズデータ
 const markdown: string = `

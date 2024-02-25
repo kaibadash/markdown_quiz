@@ -1,6 +1,6 @@
 /** @format */
 
-import { Item } from "./Item";
+import { Item } from "../Item";
 
 export class Question {
   public text: string = "";
