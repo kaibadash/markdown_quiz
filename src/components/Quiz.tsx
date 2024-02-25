@@ -1,13 +1,13 @@
 import "./Quiz.css";
 
 import React, { useState, useEffect } from "react";
+import _ from "lodash";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import { Questions } from "../data/Questions";
 import { Question } from "../data/Question";
 import { Item } from "../Item";
-
 async function parseMarkdown(markdown: string): Promise<Questions> {
   const processor = unified().use(remarkParse).use(remarkRehype);
   const contents = await processor.parse(markdown);
@@ -55,7 +55,7 @@ const Quiz: React.FC = () => {
 
   const handleCheckboxChange = (item: Item) => {
     item.selected = !item.selected;
-    setQuestions(structuredClone(questions));
+    setQuestions(_.cloneDeep(questions));
   };
 
   const handleEnd = () => {
