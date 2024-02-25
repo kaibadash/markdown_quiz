@@ -25,6 +25,9 @@ export class Question {
     const correctList = this.items.filter((item) => {
       return item.correct;
     });
+    if (correctList.length === 0) {
+      return false;
+    }
     const okList = this.items.filter((item) => {
       return item.correct && item.selected;
     });

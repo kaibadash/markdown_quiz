@@ -16,24 +16,34 @@ async function parseMarkdown(markdown: string): Promise<Questions> {
   let questions = new Questions();
   let currentQuestion: Question | null = null;
   for (const child of contents.children) {
-    if (child.type === "thematicBreak") {
-      if (currentQuestion) questions.add(currentQuestion);
-      currentQuestion = null;
-    } else if (child.type === "paragraph") {
-      // 新しい質問を開始
-      const questionText = child.children[0] as any;
-      currentQuestion = new Question(questionText["value"]);
-    } else if (child.type === "list" && currentQuestion) {
-      for (const item of child.children) {
-        const itemText = (item.children[0] as any).children[0].value;
-        const correct = itemText.startsWith("[x]");
-        const text = itemText
-          .replace(/^\[ ?x?\]\s?/, "")
-          .replace(/^\[\]\s*/, "");
-        currentQuestion.add(new Item(text, correct));
-      }
+    switch (child.type) {
+      case "thematicBreak":
+        if (currentQuestion) questions.add(currentQuestion);
+        currentQuestion = null;
+        break;
+
+      case "paragraph":
+        const questionText = child.children[0] as any;
+        currentQuestion = new Question(questionText["value"]);
+        break;
+
+      case "list":
+        if (!currentQuestion) {
+          break;
+        }
+
+        for (const item of child.children) {
+          const itemText = (item.children[0] as any).children[0].value;
+          const correct = itemText.startsWith("[x]");
+          const text = itemText
+            .replace(/^\[ ?x?\]\s?/, "")
+            .replace(/^\[\]\s*/, "");
+          currentQuestion.add(new Item(text, correct));
+        }
+        break;
     }
   }
+
   // 最後の質問を追加
   if (currentQuestion) questions.add(currentQuestion);
 
@@ -42,13 +52,11 @@ async function parseMarkdown(markdown: string): Promise<Questions> {
 
 const Quiz: React.FC = () => {
   const [questions, setQuestions] = useState<Questions>(new Questions());
-  const [markdownContent, setMarkdownContent] = useState<string>("");
 
   useEffect(() => {
     (async () => {
       const response = await fetch("/quiz/rails.md");
       const md = await response.text();
-      setMarkdownContent(md);
       setQuestions(await parseMarkdown(md));
     })();
   }, []); // 空の依存配列を渡すことで、コンポーネントのマウント時にのみ実行されるようにする
@@ -66,7 +74,9 @@ const Quiz: React.FC = () => {
     <div>
       {questions.questions.map((question, questionIndex) => (
         <div key={questionIndex}>
-          <h2>{question.text}</h2>
+          <h2>
+            {questionIndex + 1}: {question.text}
+          </h2>
           <ol>
             {question.items.map((item, itemIndex) => {
               return (
@@ -85,9 +95,13 @@ const Quiz: React.FC = () => {
           </ol>
         </div>
       ))}
-      <div>
+      <div className="footerControl">
         <button onClick={(e) => handleEnd()}>End</button>
-        {questions.numberOfCorrectAnswers}
+        <span className="score">
+          {questions.ended
+            ? `${questions.numberOfCorrectAnswers} / ${questions.numberOfQuestions()}`
+            : ""}
+        </span>
       </div>
     </div>
   );

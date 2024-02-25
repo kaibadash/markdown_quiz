@@ -1,1 +1,15 @@
 /** @format */
+.footerControl {
+  position: fixed;
+  bottom: 0px;
+  padding: 5px;
+  background-color: #aaa;
+  width: 100%;
+}
+.footerControl button {
+  width: 150px;
+  height: 50px;
+}
+.score {
+  margin: 1em;
+}
