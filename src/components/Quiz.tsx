@@ -9,9 +9,7 @@ import { Question } from '../data/Question';
 import { Item } from '../Item';
 
 async function parseMarkdown(markdown: string): Promise<Questions> {
-  const processor = unified()
-    .use(remarkParse)
-    .use(remarkRehype);
+  const processor = unified().use(remarkParse).use(remarkRehype);
   const contents = await processor.parse(markdown);
   console.log(contents);
 
@@ -58,6 +56,10 @@ const Quiz: React.FC = () => {
     setQuestions(structuredClone(questions));
   };
 
+  const handleEnd = () => {
+    questions.end();
+  }
+
   return (
     <div>
       {questions.questions.map((question, questionIndex) => (
@@ -81,6 +83,10 @@ const Quiz: React.FC = () => {
           </ol>
         </div>
       ))}
+      <div>
+        <button onClick={(e) => handleEnd()}>End</button>
+        {questions.numberOfCorrectAnswers}
+      </div>
     </div>
   );
 };
