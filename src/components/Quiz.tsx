@@ -59,7 +59,7 @@ const Quiz: React.FC = () => {
   useEffect(() => {
     console.log(fileName);
     (async () => {
-      const response = await fetch(`/quiz/${fileName}`);
+      const response = await fetch(`./quiz/${fileName}`);
       const md = await response.text();
       setQuestions(await parseMarkdown(md));
     })();
@@ -94,7 +94,7 @@ const Quiz: React.FC = () => {
           <ol className="list-group">
             {question.items.map((item, itemIndex) => {
               return (
-                <li key={item.id} className="list-group-item">
+                <li key={`${questionIndex}-${itemIndex}`} className="list-group-item">
                   <label className="form-check-label">
                     <input
                       type="checkbox"
