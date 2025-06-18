@@ -1,0 +1,24 @@
+/** @format */
+.footerControl {
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+  padding: 5px;
+  background-color: #aaaa;
+}
+.score {
+  background-color: white;
+  width: 200px;
+  text-align: center;
+  position: fixed;
+  right: 5px;
+  padding: 5px;
+}
+.answer {
+  color: red;
+  margin: auto 5px;
+}
+.ng {
+  color: red;
+  margin: auto 5px;
+}
