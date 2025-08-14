@@ -55,13 +55,45 @@ async function parseMarkdown(markdown: string): Promise<Questions> {
 const Quiz: React.FC = () => {
   const { fileName } = useParams();
   const [questions, setQuestions] = useState<Questions>(new Questions());
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
+    if (!fileName) {
+      setError("No filename specified. Please specify a filename in the URL parameter.");
+      return;
+    }
+
     console.log(fileName);
+    setLoading(true);
+    setError(null);
+    
     (async () => {
-      const response = await fetch(`./quiz/${fileName}`);
-      const md = await response.text();
-      setQuestions(await parseMarkdown(md));
+      try {
+        const response = await fetch(`/${fileName}`);
+        
+        if (!response.ok) {
+          if (response.status === 404) {
+            throw new Error(`File "${fileName}" not found. Please place the markdown file in the public/ folder.`);
+          } else {
+            throw new Error(`Failed to load file. Status: ${response.status}`);
+          }
+        }
+        
+        const md = await response.text();
+        const parsedQuestions = await parseMarkdown(md);
+        
+        if (parsedQuestions.numberOfQuestions() === 0) {
+          throw new Error("No quiz questions found. Please check the markdown file format.");
+        }
+        
+        setQuestions(parsedQuestions);
+      } catch (error) {
+        console.error("An error occurred:", error);
+        setError(error instanceof Error ? error.message : "An unexpected error occurred.");
+      } finally {
+        setLoading(false);
+      }
     })();
   }, [fileName]);
 
@@ -74,6 +106,36 @@ const Quiz: React.FC = () => {
     questions.end();
     setQuestions(_.cloneDeep(questions));
   };
+
+  if (error) {
+    return (
+      <div className="container">
+        <div className="alert alert-danger mt-5" role="alert">
+          <h4 className="alert-heading">An Error Occurred</h4>
+          <p>{error}</p>
+          <hr />
+          <p className="mb-0">
+            <strong>File Placement:</strong><br />
+            Please place markdown files in the <code>public/</code> folder.<br />
+            Example: <code>public/sample.md</code> → Quiz URL: <code>/quiz/sample.md</code>
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="container">
+        <div className="d-flex justify-content-center mt-5">
+          <div className="spinner-border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+        <p className="text-center mt-3">Loading quiz file...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container">
