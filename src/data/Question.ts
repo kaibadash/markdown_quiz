@@ -5,6 +5,7 @@ import { Item } from "../Item";
 export class Question {
   public text: string = "";
   public items: Item[];
+  public explanation: string = "";
 
   constructor(text: string) {
     this.items = [];
