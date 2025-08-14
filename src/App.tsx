@@ -5,7 +5,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 function App() {
   return (
-    <BrowserRouter basename="/a/markdown_quiz/">
+    <BrowserRouter basename="/">
       <Routes>
         <Route path="/:fileName" element={<Quiz />} />
       </Routes>
