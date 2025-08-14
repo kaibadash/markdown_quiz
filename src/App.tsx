@@ -1,15 +1,13 @@
-import "./App.css";
-import Quiz from "./components/Quiz";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import React from 'react';
+import logo from './logo.svg';
+import './App.css';
+import Quiz from './Quiz';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/:fileName" element={<Quiz />} />
-      </Routes>
-    </Router>
+    <div className="App">
+      <Quiz></Quiz>
+    </div>
   );
 }
 
