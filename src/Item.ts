@@ -1,7 +1,6 @@
 /** @format */
 
 export class Item {
-  public id: string = crypto.randomUUID();
   public text: string;
   public correct: boolean;
   public selected: boolean = false;
