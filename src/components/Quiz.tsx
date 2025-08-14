@@ -17,16 +17,25 @@ async function parseMarkdown(markdown: string): Promise<Questions> {
 
   let questions = new Questions();
   let currentQuestion: Question | null = null;
+  let listProcessed = false;
+  
   for (const child of contents.children) {
     switch (child.type) {
       case "thematicBreak":
         if (currentQuestion) questions.add(currentQuestion);
         currentQuestion = null;
+        listProcessed = false;
         break;
 
       case "paragraph":
         const questionText = child.children[0] as any;
-        currentQuestion = new Question(questionText["value"]);
+        
+        if (!currentQuestion) {
+          currentQuestion = new Question(questionText["value"]);
+          listProcessed = false;
+        } else if (listProcessed) {
+          currentQuestion.explanation = questionText["value"];
+        }
         break;
 
       case "list":
@@ -42,11 +51,11 @@ async function parseMarkdown(markdown: string): Promise<Questions> {
             .replace(/^\[\]\s*/, "");
           currentQuestion.add(new Item(text, correct));
         }
+        listProcessed = true;
         break;
     }
   }
 
-  // 最後の質問を追加
   if (currentQuestion) questions.add(currentQuestion);
 
   return questions;
@@ -180,6 +189,11 @@ const Quiz: React.FC = () => {
               );
             })}
           </ol>
+          {questions.ended && question.explanation && (
+            <div className="mt-3 p-3 bg-light border rounded">
+              <p className="mb-0 mt-2">{question.explanation}</p>
+            </div>
+          )}
         </div>
       ))}
       <div className="footerControl container-fluid">
@@ -189,7 +203,7 @@ const Quiz: React.FC = () => {
           </Button>
           <span className="border p-2 score">
             {questions.ended
-              ? `${questions.numberOfCorrectAnswers} / ${questions.numberOfQuestions()} (${(questions.numberOfCorrectAnswers / questions.numberOfQuestions()) * 100} %)`
+              ? `${questions.numberOfCorrectAnswers} / ${questions.numberOfQuestions()} (${((questions.numberOfCorrectAnswers / questions.numberOfQuestions()) * 100).toFixed(2)} %)`
               : "-"}
           </span>
         </Stack>
