@@ -1,6 +1,5 @@
-/** @format */
-
 export class Item {
+  public id: string
   public text: string;
   public correct: boolean;
   public selected: boolean = false;
@@ -8,5 +7,6 @@ export class Item {
   constructor(text: string, correct: boolean) {
     this.text = text;
     this.correct = correct;
+    this.id = text; // TODO: toHash
   }
 }
