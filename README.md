@@ -1,7 +1,6 @@
 # Markdown Quiz
 
-<img width="828" height="512" src="https://github.com/user-attachments/assets/9cb6cce8-630b-4b96-a7fc-2297599f0901" />
-
+<img width="887" height="812" src="https://github.com/user-attachments/assets/d295c851-21b9-455a-b3af-d05d6b892b13" />
 
 Create quizzes simply by placing markdown files.
 Perfect for simple quizzes, exam preparation, and study sessions.
